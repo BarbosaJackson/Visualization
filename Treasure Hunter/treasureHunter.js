@@ -1,13 +1,12 @@
 var scoreMap = new Array(256), n, m, maze;
 var cellSize, cellSized2, colorMap = new Array(256), rotationMap = new Array(256);
-var pause = false, nextStep = false, finished = true, movementDelay = 1, pauseDelay = 10;
+var pause = false, nextStep = false, finished = true, movementDelay = 1, pauseDelay = 1000;
 var currentI, currentJ, currentScore, bestScore;
 let di = [0, 1, 0, -1], dj = [1, 0, -1, 0];
 let dir = ['>', 'v', '<', '^'];
 
 function preload() {
   input = loadStrings("in");
-  console.log(input);
 }
 
 function setup() {
