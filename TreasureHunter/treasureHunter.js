@@ -14,8 +14,8 @@ function setup() {
   angleMode(DEGREES);
   textSize(22);
 
-  n = split(input[0], " ")[0], m = split(input[0], " ")[1];
-  maze = new Array(n);
+  n = localStorage.getItem('lines'), m = localStorage.getItem('cols');
+  maze = localStorage.getItem('maze');
   for (var i = 0; i < n; i ++) {
     maze[i] = new Array(m);
     for (var j = 0; j < m; j ++)
@@ -139,3 +139,4 @@ async function go(i = 0, j = 0, score = 0) {
   checkNextStep();
   if (i == 0 && j == 0) finished = true;
 }
+
