@@ -1,10 +1,11 @@
 var scoreMap = new Array(256), n, m, maze, mazeAux;
 var cellSize, cellSized2, colorMap = new Array(256), rotationMap = new Array(256);
-var pause = false, nextStep = false, finished = true, movementDelay = 1, pauseDelay = 1000;
+var pause = false, nextStep = false, finished = true, movementDelay = 100, pauseDelay = 1000, maxDelay = 2000, minDelay = 100;
 var currentI, currentJ, currentScore, bestScore;
 let di = [0, 1, 0, -1], dj = [1, 0, -1, 0];
 let dir = ['>', 'v', '<', '^'];
 let startButton;
+let bestPath = '';
 
 function preload() {
   n = localStorage.getItem('lines');
@@ -24,8 +25,7 @@ function initMaze() {
 }
 
 function setup() {
-  let canvas = createCanvas(900, 600);
-  canvas.parent('visualization');
+  createCanvas(900, 600).parent('visualization');
   angleMode(DEGREES);
   textSize(22);
 
@@ -98,9 +98,9 @@ function draw() {
   var x = width - 290;
   var y = [400, 450, 500];
   text("best: " + str(bestScore), width - 290, 100);
-  text("s - start", canvas.width - 290, 400, width - 190, 450);
+  text("s - start", width - 290, 400, width - 190, 450);
   if(mouseIsPressed) {
-    if(finished && mouseX >= canvas.width - 290 && mouseX < canvas.width - 200 && mouseY >= y[0] && mouseY < 420) {
+    if(finished && mouseX >= width - 290 && mouseX < width - 200 && mouseY >= y[0] && mouseY < 420) {
       bestScore = 0;
       finished = false;
       go();
@@ -127,10 +127,11 @@ function checkNextStep() {
 }
 
 async function sleep(ms) {
-  if (ms)
+  if (ms) {
     return new Promise((resolve, reject) => {
       setTimeout(function() { resolve(); }, ms);
     });
+  }
 }
 
 async function drawDelay() {
@@ -149,9 +150,10 @@ function invalid(ni, nj) {
 async function go(i = 0, j = 0, score = 0) {
   checkNextStep();
   let prv = maze[i][j];
-  if(!maze[i][j])scoreMap[maze[i][j]] = 0;
+  if(!maze[i][j]) scoreMap[maze[i][j]] = 0;
   score += scoreMap[maze[i][j]];
-  currentI = i, currentJ = j, currentScore = score, bestScore = max(bestScore, score);
+  currentI = i, currentJ = j, currentScore = score;
+  bestScore = max(bestScore, score);
   maze[i][j] = 'y';
   await drawDelay();
 
@@ -169,5 +171,7 @@ async function go(i = 0, j = 0, score = 0) {
   maze[i][j] = prv;
   currentI = i, currentJ = j, currentScore = score;
   checkNextStep();
-  if (i == 0 && j == 0) finished = true;
+  if (i == 0 && j == 0) {
+    finished = true;
+  }
 }
