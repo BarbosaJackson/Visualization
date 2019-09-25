@@ -4,7 +4,8 @@ var pause = false, nextStep = false, finished = true, movementDelay = 1, pauseDe
 var currentI, currentJ, currentScore, bestScore;
 let di = [0, 1, 0, -1], dj = [1, 0, -1, 0];
 let dir = ['>', 'v', '<', '^'];
-let flag_setup = true, flag_go = true;
+let startButton;
+
 function preload() {
   n = localStorage.getItem('lines');
   m = localStorage.getItem('cols');
@@ -23,19 +24,17 @@ function initMaze() {
 }
 
 function setup() {
-  createCanvas(900, 600);
+  let canvas = createCanvas(900, 600);
+  canvas.parent('visualization');
   angleMode(DEGREES);
   textSize(22);
-  
-  bestScore = 0;
-  currentScore = 0;
 
   initMaze();
 
   for (var i = 0; i < 256; i ++) {
     scoreMap[i] = 0;
   }
-  
+  scoreMap['\n'] = 0;
   scoreMap['.'] = 0; 
   scoreMap['b'] = 1;
   scoreMap['p'] = 5;
@@ -96,10 +95,18 @@ function draw() {
 
   fill(0, 0, 0);
   text("current: (" + str(currentI) + ", " + str(currentJ) + ") " + str(currentScore), width - 290, 50);
+  var x = width - 290;
+  var y = [400, 450, 500];
   text("best: " + str(bestScore), width - 290, 100);
-
-  text("s - start", width - 290, 400);
-  text("p - pause", width - 290, 450);
+  text("s - start", canvas.width - 290, 400, width - 190, 450);
+  if(mouseIsPressed) {
+    if(finished && mouseX >= canvas.width - 290 && mouseX < canvas.width - 200 && mouseY >= y[0] && mouseY < 420) {
+      bestScore = 0;
+      finished = false;
+      go();
+    }
+  }
+  text("p - pause", width - 290, 460);
   text("n - next step", width - 290, 500);
 }
 
@@ -113,20 +120,24 @@ function keyReleased() {
     go();
   }
 }
+
 function checkNextStep() {
   if (nextStep == true)
     pause = true, nextStep = false;
 }
+
 async function sleep(ms) {
   if (ms)
     return new Promise((resolve, reject) => {
       setTimeout(function() { resolve(); }, ms);
     });
 }
+
 async function drawDelay() {
   while (pause) await sleep(pauseDelay);
   await sleep(movementDelay);
 }
+
 function invalid(ni, nj) {
   return ni < 0 || nj < 0 || ni >= n || nj >= m ||
   maze[ni][nj] == '#' || maze[ni][nj] == 'y' ||
@@ -136,13 +147,11 @@ function invalid(ni, nj) {
 
 
 async function go(i = 0, j = 0, score = 0) {
-  console.log(str(i) + " " + str(j) + " " + str(score));
   checkNextStep();
-
   let prv = maze[i][j];
+  if(!maze[i][j])scoreMap[maze[i][j]] = 0;
   score += scoreMap[maze[i][j]];
   currentI = i, currentJ = j, currentScore = score, bestScore = max(bestScore, score);
-  
   maze[i][j] = 'y';
   await drawDelay();
 
