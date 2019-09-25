@@ -16,11 +16,6 @@ function setup() {
 
   n = localStorage.getItem('lines'), m = localStorage.getItem('cols');
   maze = localStorage.getItem('maze');
-  for (var i = 0; i < n; i ++) {
-    maze[i] = new Array(m);
-    for (var j = 0; j < m; j ++)
-      maze[i][j] = input[i + 1][j];
-  }
   for (var i = 0; i < 256; i ++) scoreMap[i] = 0;
   scoreMap['.'] = 0, scoreMap['b'] = 1, scoreMap['p'] = 5, scoreMap['o'] = 10, scoreMap['d'] = 50;
   colorMap['b'] = color(205, 127, 50), colorMap['p'] = color(192, 192, 192);
