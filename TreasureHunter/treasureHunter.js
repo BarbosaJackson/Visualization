@@ -18,9 +18,12 @@ function initMaze() {
   let cont = 0;
   for(let i = 0; i < n; i++) {
     maze[i] = new Array(m); 
+    let lineT = '';
     for(let j = 0; j < m; j++){
-      maze[i][j] = mazeAux[cont++];
+      maze[i][j] = mazeAux[cont];
+      cont++;
     }
+    cont++;
   }
 }
 
