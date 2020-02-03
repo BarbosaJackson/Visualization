@@ -11,6 +11,8 @@ function preload() {
   n = localStorage.getItem('lines');
   m = localStorage.getItem('cols');
   mazeAux = localStorage.getItem('maze');
+  bestScore = 0;
+  currentScore = 0;
 }
 
 function initMaze() {
@@ -106,7 +108,8 @@ function draw() {
     if(finished && mouseX >= width - 290 && mouseX < width - 200 && mouseY >= y[0] && mouseY < 420) {
       bestScore = 0;
       finished = false;
-      go();
+      if(!invalid(0,0))
+        go();
     }
   }
   text("p - pause", width - 290, 460);
@@ -118,7 +121,7 @@ function keyReleased() {
     pause = !pause, nextStep = false;
   if (key == 'n' || key == 'N')
     pause = false, nextStep = true;
-  if ((key == 's' || key == 'S') && finished) {
+  if ((key == 's' || key == 'S') && finished && !invalid(0, 0)) {
     bestScore = 0, finished = false;
     go();
   }
@@ -150,7 +153,7 @@ function invalid(ni, nj) {
 }
 
 
-async function go(i = 0, j = 0, score = 0) {
+async function go(i = 0, j = 0, score = 0) { 
   checkNextStep();
   let prv = maze[i][j];
   if(!maze[i][j]) scoreMap[maze[i][j]] = 0;
