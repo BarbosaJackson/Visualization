@@ -13,6 +13,8 @@ function preload() {
   mazeAux = localStorage.getItem('maze');
   bestScore = 0;
   currentScore = 0;
+  currentI = 0;
+  currentJ = 0;
 }
 
 function initMaze() {
